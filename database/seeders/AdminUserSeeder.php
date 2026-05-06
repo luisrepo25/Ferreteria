@@ -12,9 +12,14 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        // 0. Crear los Roles básicos si no existen (Evita error de llave foránea)
+        \App\Models\Rol::updateOrCreate(['id' => 1], ['nombre' => 'Administrador', 'descripcion' => 'Control total del sistema']);
+        \App\Models\Rol::updateOrCreate(['id' => 2], ['nombre' => 'Almacenero', 'descripcion' => 'Gestión de inventario y productos']);
+        \App\Models\Rol::updateOrCreate(['id' => 3], ['nombre' => 'Cliente', 'descripcion' => 'Acceso al catálogo y pedidos']);
+
         // 1. Crear el Usuario base
         $admin = \App\Models\Usuario::updateOrCreate(
-            ['ci' => 1234567], // CI de ejemplo
+            ['ci' => 1234567],
             [
                 'nombre' => 'Administrador',
                 'apellido' => 'General',
@@ -36,16 +41,10 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        // 3. Asignarle el ROL de Administrador (ID 1 según tu script)
+        // 3. Asignarle el ROL de Administrador
         \App\Models\EstadoRol::updateOrCreate(
-            [
-                'id_rol' => 1, 
-                'ci_empleado' => $admin->ci
-            ],
-            [
-                'fechaInicio' => now(),
-                'estado' => 'Activo'
-            ]
+            ['id_rol' => 1, 'ci_empleado' => $admin->ci],
+            ['fechaInicio' => now(), 'estado' => 'Activo']
         );
     }
 }
